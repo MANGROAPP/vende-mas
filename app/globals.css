@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background-color: #fbf7f1;
+  color: #2c2a28;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #ece4d8;
+  border-radius: 8px;
+}
+
+@layer components {
+  .surface-card {
+    @apply bg-white rounded-xl2 shadow-soft border border-line;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-pastel-blueDeep text-white text-sm font-semibold px-5 py-2.5 shadow-soft active:scale-[0.98] transition disabled:opacity-40 disabled:pointer-events-none;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-cream border border-line text-ink text-sm font-semibold px-5 py-2.5 active:scale-[0.98] transition;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-pastel-redDeep text-white text-sm font-semibold px-5 py-2.5 active:scale-[0.98] transition disabled:opacity-40 disabled:pointer-events-none;
+  }
+  .field-label {
+    @apply block text-[11px] font-bold uppercase tracking-wide text-muted mb-1.5;
+  }
+  .field-input {
+    @apply w-full rounded-xl border border-line bg-cream px-3.5 py-2.5 text-sm text-ink outline-none focus:border-pastel-blueDeep focus:ring-2 focus:ring-pastel-blue transition;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold;
+  }
+}
