@@ -80,7 +80,8 @@ a{color:inherit;}
 .sidebar{width:232px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;
   padding:20px 14px;gap:2px;position:sticky;top:0;height:100vh;flex-shrink:0;}
 .sidebar-top{display:flex;align-items:center;gap:10px;min-height:34px;margin-bottom:22px;padding:0 6px;}
-.sidebar-top .logo-badge{width:34px;height:34px;border-radius:10px;background:var(--purple-grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.sidebar-top .logo-badge{width:34px;height:34px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sidebar-top .logo-badge img{width:100%;height:100%;object-fit:cover;display:block;}
 .sidebar-top .brandtext{font-weight:800;font-size:14.5px;line-height:1.1;}
 .sidebar-top .brandtext span{display:block;font-weight:600;font-size:10.5px;color:var(--text-mut);}
 .nav-btn{border:none;background:none;font-family:inherit;cursor:pointer;color:var(--text-mut);width:100%;text-align:left;
@@ -163,6 +164,7 @@ p.page-sub{margin:0;color:var(--text-mut);font-size:13.5px;}
 .icon-action{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text-mut);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;}
 .icon-action:hover{background:var(--purple-light);color:var(--purple);border-color:var(--purple-light);}
 .icon-action.danger:hover{background:var(--red-bg);color:var(--red);border-color:var(--red-bg);}
+.icon-action.confirm-pending{background:var(--red);color:#fff;border-color:var(--red);}
 
 /* BADGES / PILLS */
 .badge{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block;white-space:nowrap;letter-spacing:.02em;}
@@ -258,9 +260,9 @@ tbody tr:hover{background:#FAFAFD;}
   border-radius:50%;background:conic-gradient(from -40deg,var(--purple) 0deg,var(--teal) 120deg,transparent 130deg,transparent 360deg);
   opacity:.16;filter:blur(2px);}
 .login-brand-top{position:relative;display:flex;align-items:center;gap:11px;}
-.login-brand-mark{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);
+.login-brand-mark{width:38px;height:38px;border-radius:11px;overflow:hidden;border:1px solid rgba(255,255,255,.16);
   color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.login-brand-mark svg{width:20px;height:20px;}
+.login-brand-mark img{width:100%;height:100%;object-fit:cover;display:block;}
 .login-brand-name{font-weight:700;font-size:14.5px;letter-spacing:.01em;}
 .login-brand-name span{display:block;font-weight:500;font-size:11px;color:rgba(255,255,255,.64);}
 .login-brand-mid{position:relative;max-width:400px;}
@@ -544,6 +546,10 @@ tbody tr:hover{background:#FAFAFD;}
 .check-row{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;cursor:pointer;}
 .check-row input{width:17px;height:17px;accent-color:var(--purple);cursor:pointer;}
 .quota-updated{font-size:11px;color:var(--text-mut);margin-left:auto;white-space:nowrap;}
+.quota-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.quota-line-name{width:130px;font-size:13px;font-weight:600;}
+.quota-currency{font-size:13px;color:var(--text-mut);}
+.quota-row .quota-amount{flex:1;min-width:80px;padding:10px 13px;border-radius:11px;border:1.5px solid var(--border);background:#FBFBFE;font-family:inherit;}
 
 /* MOBILE */
 .mobile-topbar{display:none;}
@@ -572,6 +578,12 @@ tbody tr:hover{background:#FAFAFD;}
   .form-grid{gap:14px;}
   .field{min-width:0;}
   .field label{display:block;margin-bottom:6px;}
+  .quota-row{gap:8px;}
+  .quota-line-name{width:100%;}
+  .quota-row .quota-amount{flex:1 1 auto;min-width:0;}
+  .quota-updated{margin-left:0;flex:0 0 auto;}
+  .period-picker{gap:6px;}
+  .period-picker select{flex:1 1 auto;min-width:0;}
 }
 @media (max-width:480px){ .stats-row{grid-template-columns:1fr 1fr;} .stats-row-compact{grid-template-columns:1fr 1fr;} .hero-ring-wrap{width:120px;height:120px;} .hero-ring-wrap svg{width:120px;height:120px;} }
 </style>
@@ -583,6 +595,7 @@ tbody tr:hover{background:#FAFAFD;}
 
 <script>
 "use strict";
+const APP_ICON_DATA_URI = "data:image/png;base64,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"; // ícono final "V+ by MANGRO" (Ronda 16), usado en sidebar y login — mismo PNG del favicon/manifest.
 
 /* ============================================================
    CONFIGURACIÓN DE SUPABASE
@@ -604,7 +617,7 @@ const supa = (typeof window.supabase !== "undefined" && SUPABASE_URL.startsWith(
    AVISO DE MODO DEMO
    ============================================================ */
 const DEMO_NOTICE = "Modo demostración: todo lo que registres aquí vive solo en esta pestaña del navegador. Al recargar la página se pierde — esta data de ejemplo NO se guarda ni se migra al conectar Supabase después.";
-const APP_VERSION = "v2.3.0 (Supabase)";
+const APP_VERSION = "v2.4.0 (Supabase)";
 
 /* ============================================================
    FECHA Y HORA — zona horaria Perú (America/Lima, UTC-5), formato DD/MM/AAAA
@@ -847,6 +860,24 @@ function supaToast(err, fallbackMsg) {
   toast(fallbackMsg || (err?.message || "No se pudo sincronizar con el servidor. Tus cambios quedan visibles aquí, pero revisa tu conexión."), true);
 }
 
+// Refresco "real" (no solo un repintado local): vuelve a leer todo desde Supabase.
+// Usado por los botones "Actualizar" de las pantallas con listas (Ventas, Rechazos, Clientes) —
+// antes esos botones solo repintaban lo que ya había en memoria y mostraban "Datos actualizados"
+// aunque no se hubiera traído nada nuevo del servidor; esto sí trae los datos reales más recientes.
+async function refreshFromSupabase() {
+  if (!supa || !session) { toast("Datos actualizados"); renderRoute(); return; }
+  try {
+    const { data: userRow, error } = await supa.from("usuarios")
+      .select("id, email, nombre_completo, rol, vendedor_id, estado").eq("id", session.userId).single();
+    if (error || !userRow) throw error || new Error("No se encontró tu usuario.");
+    await loadRealDataFromSupabase(userRow);
+    toast("Datos actualizados");
+    renderRoute();
+  } catch (err) {
+    supaToast(err, "No se pudo actualizar desde el servidor.");
+  }
+}
+
 async function loadRealDataFromSupabase(userRow) {
   const isAdmin = userRow.rol === "admin";
   const sellerId = userRow.vendedor_id || null;
@@ -904,7 +935,7 @@ async function loadRealDataFromSupabase(userRow) {
     clients: (clientRows || []).map((c) => ({
       id: c.id, code: c.codigo, businessName: c.razon_social, tradeName: c.nombre_comercial || c.razon_social,
       ruc: c.ruc || "", phone: c.telefono || "", sellerId: c.vendedor_id, observations: c.observaciones || "",
-      branches: (c.sucursales || []).map(branchFromRow),
+      branches: (c.sucursales || []).map(branchFromRow), active: c.estado !== "inactivo",
     })),
     reasons: (reasonRows || []).map((r) => ({ id: r.id, name: r.nombre })),
     quotas: (quotaRows || []).map((q) => ({
@@ -990,6 +1021,7 @@ const ICON_PATHS = {
   compass: '<circle cx="12" cy="12" r="9"/><path d="m15 9-2 6-6 2 2-6 6-2Z"/>',
   chevronDown: '<path d="m6 9 6 6 6-6"/>',
   chevronRight: '<path d="m9 5 7 7-7 7"/>',
+  chevronLeft: '<path d="m15 5-7 7 7 7"/>',
   eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>',
   sliders: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h13M21 18h-1"/><circle cx="15" cy="6" r="2.3"/><circle cx="7" cy="12" r="2.3"/><circle cx="19" cy="18" r="2.3"/>',
   percent: '<path d="M19 5 5 19"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/>',
@@ -1341,7 +1373,7 @@ function shell(activeHref, contentHtml) {
     <div class="app">
       <div class="sidebar-backdrop" id="sb-backdrop"></div>
       <aside class="sidebar" id="sidebar">
-        <div class="sidebar-top"><div class="logo-badge">${icon("logoMark", 18)}</div><div class="brandtext">Vende+<span>by MANGRO</span></div></div>
+        <div class="sidebar-top"><div class="logo-badge"><img src="${APP_ICON_DATA_URI}" alt="Vende+"></div><div class="brandtext">Vende+<span>by MANGRO</span></div></div>
         <nav class="side-nav" style="display:flex;flex-direction:column;gap:3px;flex:1;">
           ${navItemsFor(user).map((i) => `<a href="${i.href}" class="nav-btn side-item ${activeHref === i.href ? "active" : ""}"><span class="side-icon">${icon(i.icon, 17)}</span>${i.label}</a>`).join("")}
         </nav>
@@ -1390,7 +1422,7 @@ function viewLogin() {
     <div class="login-screen">
       <div class="login-brand">
         <div class="login-brand-top">
-          <div class="login-brand-mark">${icon("logoMark", 20)}</div>
+          <div class="login-brand-mark"><img src="${APP_ICON_DATA_URI}" alt="Vende+"></div>
           <div class="login-brand-name">Vende+<span>by MANGRO · Plataforma de gestión comercial</span></div>
         </div>
         <div class="login-brand-mid">
@@ -1483,12 +1515,15 @@ function attachLoginEvents() {
 function viewDashboard() {
   const user = currentUser();
   const sellerId = user.role === "vendedor" ? user.sellerId : DB.sellers[0]?.id;
-  const sales = scopedSales(user), rejections = scopedRejections(sales), quotas = scopedQuotas(user);
+  const sales = scopedSales(user), rejections = scopedRejections(sales);
+  // Solo la cuota del mes que está corriendo — desde que Cuotas permite cargar otros periodos,
+  // sumar scopedQuotas(user) entero mezclaría meses/años distintos en el cumplimiento de Inicio.
+  const quotas = scopedQuotas(user).filter((q) => q.year === CURRENT_YEAR && q.month === CURRENT_MONTH);
   const gross = grossOf(sales), rejected = rejectedOf(rejections), net = netOf(sales, rejections);
   const quota = quotaTotal(quotas), compliance = complianceRate(net, quota), gap = gapValue(net, quota);
 
-  const wcfg = getWorkConfig(sellerId, 2026, 8);
-  const wd = computeBusinessDays(2026, 8, wcfg.countSaturdays, wcfg.holidays, TODAY_ISO, wcfg.countSundays);
+  const wcfg = getWorkConfig(sellerId, CURRENT_YEAR, CURRENT_MONTH);
+  const wd = computeBusinessDays(CURRENT_YEAR, CURRENT_MONTH, wcfg.countSaturdays, wcfg.holidays, TODAY_ISO, wcfg.countSundays);
   const daily = avgDailyNet(net, wd.elapsedHabiles), need = dailyNeed(net, quota, wd.remainingHabiles);
   const proj = projection(net, daily, wd.remainingHabiles), status = statusFromProjection(proj, quota);
   const rate = rejectionRate(gross, rejected), ticket = ticketAvg(net, sales.filter((s) => s.status !== "anulada").length);
@@ -1517,7 +1552,7 @@ function viewDashboard() {
 
   const ringSize = 150;
   const statusTone = status === "critico" ? "red" : status === "en_riesgo" ? "orange" : "green";
-  const ritmoPoints = ritmoSeriesPoints(sales, rejections, 2026, 8, TODAY_ISO);
+  const ritmoPoints = ritmoSeriesPoints(sales, rejections, CURRENT_YEAR, CURRENT_MONTH, TODAY_ISO);
   const statusCopy = {
     en_meta: { title: "Vas bien encaminado — sigue así.", icon: "checkCircle" },
     en_riesgo: { title: "Estás cerca, pero necesitas acelerar el ritmo.", icon: "alertTriangle" },
@@ -1628,7 +1663,7 @@ function viewDashboard() {
       <div>
         <div class="card card-glass">
           <h2 class="card-h">Días hábiles <span class="card-tag">Ago 2026</span></h2>
-          <div class="wd-preview">${workdaysCalendarHtml(2026, 8, wcfg, TODAY_ISO)}</div>
+          <div class="wd-preview">${workdaysCalendarHtml(CURRENT_YEAR, CURRENT_MONTH, wcfg, TODAY_ISO)}</div>
           <div class="wd-preview-foot"><span><b>${wd.remainingHabiles}</b> restantes de ${wd.totalHabiles}</span><a href="#/cuotas">Ajustar en Cuotas →</a></div>
         </div>
 
@@ -1674,6 +1709,16 @@ function viewDashboard() {
    ============================================================ */
 let ventasFilters = { seller: "", period: "todos", from: "", to: "", q: "", line: "" };
 let ventasSort = { key: "fecha", dir: "desc" };
+
+/* Mes/año calendario actual, calculado en vivo desde TODAY_ISO — nunca en duro, para que el
+   dashboard (Inicio) siempre mida el mes que realmente está corriendo. */
+const CURRENT_YEAR = Number(TODAY_ISO.slice(0, 4));
+const CURRENT_MONTH = Number(TODAY_ISO.slice(5, 7));
+/* Periodo seleccionado en Cuotas — por defecto el mes/año actual, pero el vendedor puede
+   navegar a cualquier mes de cualquier año para ingresar historial/data pasada. */
+let cuotasYear = CURRENT_YEAR;
+let cuotasMonth = CURRENT_MONTH;
+const MESES_NOMBRES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
 function ventasRows(user) {
   let sales = scopedSales(user);
@@ -1732,7 +1777,7 @@ function attachFilterBarEvents(onChange, exportExcel, exportJson) {
   $("#flt-line")?.addEventListener("change", (e) => { ventasFilters.line = e.target.value; onChange(); });
   $("#flt-q")?.addEventListener("input", (e) => { ventasFilters.q = e.target.value; onChange(); });
   $("#flt-clear")?.addEventListener("click", () => { ventasFilters = { seller: "", period: "todos", from: "", to: "", q: "", line: "" }; onChange(); });
-  $("#flt-refresh")?.addEventListener("click", () => { toast("Datos actualizados"); onChange(); });
+  $("#flt-refresh")?.addEventListener("click", () => { refreshFromSupabase(); });
   $("#exp-excel")?.addEventListener("click", exportExcel);
   $("#exp-json")?.addEventListener("click", exportJson);
 }
@@ -2104,7 +2149,7 @@ function attachRechazosEvents() {
   $("#flt-reason")?.addEventListener("change", (e) => { rechazosFilters.reason = e.target.value; rerender(); });
   $("#flt-q")?.addEventListener("input", (e) => { rechazosFilters.q = e.target.value; rerender(); });
   $("#flt-clear")?.addEventListener("click", () => { rechazosFilters = { seller: "", period: "todos", from: "", to: "", q: "", line: "", reason: "" }; rerender(); });
-  $("#flt-refresh")?.addEventListener("click", () => { toast("Datos actualizados"); rerender(); });
+  $("#flt-refresh")?.addEventListener("click", () => { refreshFromSupabase(); });
   $("#exp-excel")?.addEventListener("click", () => exportRechazosExcel(rechazosRows(currentUser())));
   $("#exp-json")?.addEventListener("click", () => { downloadJSON("historial-rechazos.json", rechazosRows(currentUser())); toast("Copia JSON exportada"); });
 }
@@ -2114,50 +2159,64 @@ function attachRechazosEvents() {
    ============================================================ */
 let clientFormOpen = false, sucRowSeq = 0, visitFormOpen = false;
 let clientesFilters = { q: "" };
+let clientesSort = { key: "tradeName", dir: "asc" };
+// null = formulario en modo "crear"; con un id, el formulario edita ese cliente existente
+// (mismo formulario, mismas sucursales — al guardar se reemplaza el set completo de sucursales).
+let editingClientId = null;
 function depOptionsHtml(selected) { return geoDepartamentos().map((d) => `<option value="${esc(d)}" ${d === selected ? "selected" : ""}>${esc(d)}</option>`).join(""); }
-function sucRowHtml(idx) {
-  const dep = geoDepartamentos()[0];
+function sucRowHtml(idx, branch) {
+  const dep = branch?.departamento || geoDepartamentos()[0];
   return `
     <div class="suc-row" data-idx="${idx}">
       <button type="button" class="icon-action danger suc-remove" title="Quitar">${icon("x",13)}</button>
       <div class="suc-row-title">Sucursal ${idx + 1}</div>
       <div class="form-grid">
-        <div class="field"><label>Nombre de sucursal</label><input type="text" class="suc-name" required></div>
+        <div class="field"><label>Nombre de sucursal</label><input type="text" class="suc-name" value="${esc(branch?.name || "")}" required></div>
         <div class="field"><label>Departamento</label><select class="suc-dep">${depOptionsHtml(dep)}</select></div>
-        <div class="field"><label>Provincia</label><select class="suc-prov"></select></div>
-        <div class="field"><label>Distrito</label><select class="suc-dist"></select></div>
-        <div class="field"><label>Referencia (opcional)</label><input type="text" class="suc-ref" placeholder="Ej. frente al parque, cerca al grifo…"></div>
+        <div class="field"><label>Provincia</label><select class="suc-prov" data-preset="${esc(branch?.provincia || "")}"></select></div>
+        <div class="field"><label>Distrito</label><select class="suc-dist" data-preset="${esc(branch?.distrito || "")}"></select></div>
+        <div class="field"><label>Referencia (opcional)</label><input type="text" class="suc-ref" value="${esc(branch?.reference || "")}" placeholder="Ej. frente al parque, cerca al grifo…"></div>
       </div>
     </div>`;
 }
 function wireSucRow(rowEl) {
   const depSel = $(".suc-dep", rowEl), provSel = $(".suc-prov", rowEl), distSel = $(".suc-dist", rowEl);
-  function refreshProv() { provSel.innerHTML = geoProvincias(depSel.value).map((p) => `<option value="${esc(p)}">${esc(p)}</option>`).join(""); refreshDist(); }
-  function refreshDist() { distSel.innerHTML = geoDistritos(depSel.value, provSel.value).map((d) => `<option value="${esc(d)}">${esc(d)}</option>`).join(""); }
+  function refreshProv() {
+    const preset = provSel.dataset.preset;
+    provSel.innerHTML = geoProvincias(depSel.value).map((p) => `<option value="${esc(p)}" ${p === preset ? "selected" : ""}>${esc(p)}</option>`).join("");
+    provSel.dataset.preset = ""; // el preset solo se aplica una vez, al cargar el formulario de edición
+    refreshDist();
+  }
+  function refreshDist() {
+    const preset = distSel.dataset.preset;
+    distSel.innerHTML = geoDistritos(depSel.value, provSel.value).map((d) => `<option value="${esc(d)}" ${d === preset ? "selected" : ""}>${esc(d)}</option>`).join("");
+    distSel.dataset.preset = "";
+  }
   depSel.addEventListener("change", refreshProv);
   provSel.addEventListener("change", refreshDist);
   $(".suc-remove", rowEl).addEventListener("click", () => { if ($$(".suc-row", $("#suc-rows")).length > 1) rowEl.remove(); else toast("El cliente debe tener al menos una sucursal", true); });
   refreshProv();
 }
 function clientFormHtml() {
+  const editing = editingClientId ? DB.clients.find((c) => c.id === editingClientId) : null;
   return `
     <div class="card" style="background:var(--card-2);">
       <form id="client-form">
-        <h2 style="font-size:13px;font-weight:700;margin:0 0 14px;">Datos del cliente</h2>
+        <h2 style="font-size:13px;font-weight:700;margin:0 0 14px;">${editing ? "Editar cliente" : "Datos del cliente"}</h2>
         <div class="form-grid">
-          <div class="field"><label>Razón social</label><input id="cf-business" type="text" required></div>
-          <div class="field"><label>Nombre comercial</label><input id="cf-trade" type="text"></div>
-          <div class="field"><label>RUC</label><input id="cf-ruc" type="text"></div>
-          <div class="field"><label>Teléfono</label><input id="cf-phone" type="tel"></div>
+          <div class="field"><label>Razón social</label><input id="cf-business" type="text" value="${esc(editing?.businessName || "")}" required></div>
+          <div class="field"><label>Nombre comercial</label><input id="cf-trade" type="text" value="${esc(editing?.tradeName || "")}"></div>
+          <div class="field"><label>RUC</label><input id="cf-ruc" type="text" value="${esc(editing?.ruc || "")}"></div>
+          <div class="field"><label>Teléfono</label><input id="cf-phone" type="tel" value="${esc(editing?.phone || "")}"></div>
         </div>
-        <div class="field" style="margin-top:6px;"><label>Observaciones</label><input id="cf-obs" type="text"></div>
+        <div class="field" style="margin-top:6px;"><label>Observaciones</label><input id="cf-obs" type="text" value="${esc(editing?.observations || "")}"></div>
         <h2 style="font-size:13px;font-weight:700;margin:22px 0 4px;">Sucursales</h2>
         <p style="font-size:12px;color:var(--text-mut);margin:0 0 14px;">Registra aquí mismo cada sucursal del cliente, con su departamento, provincia y distrito — no hace falta un módulo aparte.</p>
         <div id="suc-rows"></div>
         <button type="button" id="suc-add" class="btn btn-ghost btn-sm">${icon("plus",14)} Agregar sucursal</button>
         <div id="client-form-error" class="form-error" style="display:none;"></div>
         <div style="display:flex;gap:8px;margin-top:18px;">
-          <button type="submit" class="btn btn-purple">Guardar cliente</button>
+          <button type="submit" class="btn btn-purple">${editing ? "Guardar cambios" : "Guardar cliente"}</button>
           <button type="button" id="cf-cancel" class="btn btn-outline">Cancelar</button>
         </div>
       </form>
@@ -2183,38 +2242,94 @@ function visitFormHtml() {
       </form>
     </div>`;
 }
+function clientesSortArrow(key) { return clientesSort.key === key ? (clientesSort.dir === "asc" ? "▲" : "▼") : "▲"; }
+function thSortClientes(key, label) { return `<th class="th-sort ${clientesSort.key === key ? "sort-active" : ""}" data-csort="${key}">${label}<span class="sort-arrow">${clientesSortArrow(key)}</span></th>`; }
 function viewClientes() {
   const user = currentUser();
-  const clients = scopedClients(user);
+  const clients = scopedClients(user).filter((c) => c.active !== false); // los "eliminados" quedan como inactivos, no se listan
   const q = clientesFilters.q.trim().toLowerCase();
   const filtered = q ? clients.filter((c) => c.tradeName.toLowerCase().includes(q) || c.businessName.toLowerCase().includes(q) || c.branches.some((b) => (b.distrito || "").toLowerCase().includes(q))) : clients;
-  const rows = filtered.map((c) => {
+  let rows = filtered.map((c) => {
     const cSales = DB.sales.filter((s) => s.clientId === c.id), cRej = scopedRejections(cSales);
     const gross = grossOf(cSales), last = cSales.map((s) => s.saleDate).sort().pop() || null;
     const cVisits = scopedVisits(user).filter((v) => v.clientId === c.id);
     return { c, branches: c.branches.length, gross, rate: rejectionRate(gross, rejectedOf(cRej)), days: daysSince(last, TODAY_ISO), visits: cVisits.length };
   });
+  const sortGetters = {
+    tradeName: (r) => r.c.tradeName.toLowerCase(), branches: (r) => r.branches, gross: (r) => r.gross,
+    rate: (r) => r.rate, visits: (r) => r.visits, days: (r) => (r.days === null ? -1 : r.days),
+  };
+  const getter = sortGetters[clientesSort.key] || sortGetters.tradeName;
+  rows = rows.slice().sort((a, b) => {
+    const va = getter(a), vb = getter(b);
+    const cmp = typeof va === "string" ? va.localeCompare(vb) : va - vb;
+    return clientesSort.dir === "asc" ? cmp : -cmp;
+  });
   return `
     <div class="page-head"><div><h1 class="page-title">Clientes</h1><p class="page-sub">Cada cliente incluye sus propias sucursales y distritos — sin módulos aparte.</p></div>
-    <div style="display:flex;gap:8px;"><button id="btn-new-visit" class="btn btn-outline">${icon("eye",14)} Registrar visita</button><button id="btn-new-client" class="btn btn-purple">${icon("plus",14)} Nuevo cliente</button></div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;"><button id="flt-refresh" class="btn btn-ghost btn-sm">${icon("refresh",13)} Actualizar</button><button id="btn-new-visit" class="btn btn-outline">${icon("eye",14)} Registrar visita</button><button id="btn-new-client" class="btn btn-purple">${icon("plus",14)} Nuevo cliente</button></div></div>
     <div id="visit-form-wrap">${visitFormOpen ? visitFormHtml() : ""}</div>
     <div id="client-form-wrap">${clientFormOpen ? clientFormHtml() : ""}</div>
     <div class="filters"><input type="search" id="flt-clientes-q" placeholder="Buscar por cliente o distrito" value="${esc(clientesFilters.q)}"><div class="spacer"></div></div>
     <div class="card">
-      <div class="table-scroll"><table><thead><tr><th>Cliente</th><th>Sucursales</th><th>Venta bruta</th><th>% rechazo</th><th>Visitas (mes)</th><th>Días sin comprar</th></tr></thead>
+      <div class="table-scroll"><table><thead><tr>${thSortClientes("tradeName", "Cliente")}${thSortClientes("branches", "Sucursales")}${thSortClientes("gross", "Venta bruta")}${thSortClientes("rate", "% rechazo")}${thSortClientes("visits", "Visitas (mes)")}${thSortClientes("days", "Días sin comprar")}<th></th></tr></thead>
       <tbody>${rows.map(({ c, branches, gross, rate, days, visits }) => `<tr>
         <td><div style="font-weight:700;">${esc(c.tradeName)}</div><div style="font-size:11.5px;color:var(--text-mut);">${esc(c.businessName)} · RUC ${esc(c.ruc) || "—"}</div>
           <div style="margin-top:4px;">${c.branches.map((b) => distritoPill(`${b.name} · ${b.distrito}`, "purple")).join(" ")}</div></td>
         <td>${branches}</td><td>${currency(gross)}</td><td>${rate.toFixed(1)}%</td><td>${visits || "—"}</td>
         <td>${days === null ? "—" : `<span style="${days >= 20 ? "color:var(--red);font-weight:700;" : ""}">${days} días</span>`}</td>
-      </tr>`).join("") || `<tr><td colspan="6"><div class="empty-state">Ningún cliente coincide con la búsqueda.</div></td></tr>`}</tbody></table></div>
+        <td style="white-space:nowrap;"><button class="icon-action edit-client" data-id="${c.id}" title="Editar">${icon("sliders",14)}</button> <button class="icon-action danger delete-client" data-id="${c.id}" title="Eliminar">${icon("x",14)}</button></td>
+      </tr>`).join("") || `<tr><td colspan="7"><div class="empty-state">Ningún cliente coincide con la búsqueda.</div></td></tr>`}</tbody></table></div>
     </div>`;
 }
 function attachClientesEvents() {
-  $("#btn-new-client")?.addEventListener("click", () => { clientFormOpen = true; visitFormOpen = false; renderRoute(); setTimeout(() => { $("#suc-add").click(); }, 0); });
-  $("#cf-cancel")?.addEventListener("click", () => { clientFormOpen = false; renderRoute(); });
+  $("#flt-refresh")?.addEventListener("click", () => { refreshFromSupabase(); });
+  $$(".th-sort[data-csort]").forEach((th) => th.addEventListener("click", () => {
+    const key = th.dataset.csort;
+    clientesSort.dir = clientesSort.key === key && clientesSort.dir === "asc" ? "desc" : "asc";
+    clientesSort.key = key;
+    renderRoute();
+  }));
+  $("#btn-new-client")?.addEventListener("click", () => { editingClientId = null; clientFormOpen = true; visitFormOpen = false; renderRoute(); setTimeout(() => { $("#suc-add").click(); }, 0); });
+  $("#cf-cancel")?.addEventListener("click", () => { clientFormOpen = false; editingClientId = null; renderRoute(); });
   $("#btn-new-visit")?.addEventListener("click", () => { visitFormOpen = true; clientFormOpen = false; renderRoute(); });
   $("#vf-cancel")?.addEventListener("click", () => { visitFormOpen = false; renderRoute(); });
+  $$(".edit-client").forEach((btn) => btn.addEventListener("click", () => {
+    const client = DB.clients.find((c) => c.id === btn.dataset.id);
+    if (!client) return;
+    editingClientId = client.id; clientFormOpen = true; visitFormOpen = false;
+    renderRoute();
+    setTimeout(() => {
+      const wrap = $("#suc-rows");
+      wrap.innerHTML = "";
+      (client.branches.length ? client.branches : [null]).forEach((b, i) => {
+        wrap.insertAdjacentHTML("beforeend", sucRowHtml(i, b));
+        wireSucRow(wrap.lastElementChild);
+      });
+    }, 0);
+  }));
+  $$(".delete-client").forEach((btn) => btn.addEventListener("click", () => {
+    // Confirmación en dos pasos dentro del propio botón (sin usar confirm() nativo, para
+    // mantener el mismo lenguaje visual de la app) — el primer clic pide confirmar, el
+    // segundo clic (en los 4s siguientes) ejecuta el borrado.
+    if (btn.dataset.confirm !== "1") {
+      btn.dataset.confirm = "1"; btn.title = "Clic de nuevo para confirmar"; btn.classList.add("confirm-pending");
+      setTimeout(() => { btn.dataset.confirm = ""; btn.title = "Eliminar"; btn.classList.remove("confirm-pending"); }, 4000);
+      return;
+    }
+    const client = DB.clients.find((c) => c.id === btn.dataset.id);
+    if (!client) return;
+    // "Eliminar" es un borrado suave (estado inactivo) — igual que en Usuarios: si el cliente ya
+    // tiene ventas registradas, borrarlo de verdad rompería ese historial. Deja de listarse aquí.
+    client.active = false;
+    toast("Cliente eliminado");
+    renderRoute();
+    if (supa) {
+      supa.from("clientes").update({ estado: "inactivo" }).eq("id", client.id).then(({ error }) => {
+        if (error) { client.active = true; supaToast(error, "No se pudo eliminar el cliente en el servidor."); renderRoute(); }
+      });
+    }
+  }));
   wireDateField("vf-date");
   $("#visit-form")?.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -2256,10 +2371,54 @@ function attachClientesEvents() {
     if (!branches.length) { $("#client-form-error").textContent = "Agrega al menos una sucursal con nombre y distrito."; $("#client-form-error").style.display = "block"; return; }
     const user = currentUser();
     const sellerId = user.sellerId || user.id;
+    const businessName = bn, tradeName = $("#cf-trade").value.trim() || bn, ruc = $("#cf-ruc").value.trim(), phone = $("#cf-phone").value.trim(), observations = $("#cf-obs").value.trim();
+    const editing = editingClientId ? DB.clients.find((c) => c.id === editingClientId) : null;
+
+    if (editing) {
+      // ---- EDITAR cliente existente: se reemplaza el set completo de sucursales (más simple
+      // y predecible que intentar "diffear" fila por fila cuáles cambiaron/se agregaron/se quitaron) ----
+      const clientId = editing.id;
+      Object.assign(editing, { businessName, tradeName, ruc, phone, observations, branches });
+      editingClientId = null; clientFormOpen = false;
+      toast("Cliente actualizado");
+      renderRoute();
+
+      if (supa) {
+        (async () => {
+          try {
+            const { error: updErr } = await supa.from("clientes").update({
+              razon_social: businessName, nombre_comercial: tradeName, ruc, telefono: phone, observaciones: observations,
+            }).eq("id", clientId);
+            if (updErr) throw updErr;
+
+            // reemplaza todas las sucursales de este cliente por el set nuevo del formulario
+            const { error: delErr } = await supa.from("sucursales").delete().eq("cliente_id", clientId);
+            if (delErr) throw delErr;
+
+            const branchRows = [];
+            for (const b of branches) {
+              const zoneId = await getOrCreateZoneId(b.departamento, b.provincia, b.distrito);
+              branchRows.push({ cliente_id: clientId, zona_id: zoneId, codigo: b.id, nombre: b.name, referencia: b.reference });
+            }
+            const { data: insertedBranches, error: branchErr } = await supa.from("sucursales").insert(branchRows).select("id, codigo");
+            if (branchErr) throw branchErr;
+            const localAfter = DB.clients.find((c) => c.id === clientId);
+            if (localAfter) (insertedBranches || []).forEach((row) => {
+              const lb = localAfter.branches.find((x) => x.id === row.codigo);
+              if (lb) lb.id = row.id;
+            });
+          } catch (err) {
+            supaToast(err, "No se pudo actualizar el cliente en el servidor. Los cambios quedan visibles solo en esta pantalla.");
+          }
+        })();
+      }
+      return;
+    }
+
+    // ---- CREAR cliente nuevo (flujo original) ----
     const localId = `c-${Date.now()}`;
     const code = `CLI-${String(DB.clients.length + 1).padStart(3, "0")}`;
-    const businessName = bn, tradeName = $("#cf-trade").value.trim() || bn, ruc = $("#cf-ruc").value.trim(), phone = $("#cf-phone").value.trim(), observations = $("#cf-obs").value.trim();
-    DB.clients.unshift({ id: localId, code, businessName, tradeName, ruc, phone, observations, sellerId, branches });
+    DB.clients.unshift({ id: localId, code, businessName, tradeName, ruc, phone, observations, sellerId, branches, active: true });
     clientFormOpen = false;
     toast("Cliente registrado con sus sucursales");
     renderRoute();
@@ -2276,7 +2435,7 @@ function attachClientesEvents() {
           for (const b of branches) {
             // public.sucursales exige zona_id; se busca/crea la zona a partir de dep/prov/dist (ver getOrCreateZoneId).
             const zoneId = await getOrCreateZoneId(b.departamento, b.provincia, b.distrito);
-            branchRows.push({ cliente_id: insertedClient.id, zona_id: zoneId, codigo: b.id, nombre: b.name, direccion: b.address, referencia: b.reference });
+            branchRows.push({ cliente_id: insertedClient.id, zona_id: zoneId, codigo: b.id, nombre: b.name, referencia: b.reference });
           }
           const { data: insertedBranches, error: branchErr } = await supa.from("sucursales").insert(branchRows).select("id, codigo");
           if (branchErr) throw branchErr;
@@ -2302,15 +2461,35 @@ function attachClientesEvents() {
 /* ============================================================
    VISTA: CUOTAS (vendedor y admin)
    ============================================================ */
+function cuotasPeriodPickerHtml() {
+  const nowYear = Number(TODAY_ISO.slice(0, 4));
+  const yearOptions = [];
+  for (let y = nowYear - 3; y <= nowYear + 1; y++) yearOptions.push(y);
+  return `
+    <div class="period-picker" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+      <button type="button" id="cuotas-prev" class="btn btn-outline btn-sm" title="Mes anterior">${icon("chevronLeft", 14)}</button>
+      <select id="cuotas-month-select" style="padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:#FBFBFE;font-family:inherit;font-size:13px;font-weight:600;">
+        ${MESES_NOMBRES.map((m, i) => `<option value="${i + 1}" ${i + 1 === cuotasMonth ? "selected" : ""}>${m}</option>`).join("")}
+      </select>
+      <select id="cuotas-year-select" style="padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:#FBFBFE;font-family:inherit;font-size:13px;font-weight:600;">
+        ${yearOptions.map((y) => `<option value="${y}" ${y === cuotasYear ? "selected" : ""}>${y}</option>`).join("")}
+      </select>
+      <button type="button" id="cuotas-next" class="btn btn-outline btn-sm" title="Mes siguiente">${icon("chevronRight", 14)}</button>
+      ${(cuotasYear !== nowYear || cuotasMonth !== Number(TODAY_ISO.slice(5, 7))) ? `<button type="button" id="cuotas-today" class="btn btn-outline btn-sm">Mes actual</button>` : ""}
+    </div>`;
+}
 function viewCuotas() {
   const user = currentUser();
   const sellerId = user.role === "vendedor" ? user.sellerId : DB.sellers[0]?.id;
   const seller = DB.sellers.find((s) => s.id === sellerId);
-  const cfg = getWorkConfig(sellerId, 2026, 8);
-  const wd = computeBusinessDays(2026, 8, cfg.countSaturdays, cfg.holidays, TODAY_ISO, cfg.countSundays);
+  const cfg = getWorkConfig(sellerId, cuotasYear, cuotasMonth);
+  const wd = computeBusinessDays(cuotasYear, cuotasMonth, cfg.countSaturdays, cfg.holidays, TODAY_ISO, cfg.countSundays);
+  const periodLabel = `${MESES_NOMBRES[cuotasMonth - 1]} ${cuotasYear}`;
   return `
     <h1 class="page-title" style="margin-bottom:4px;">Cuotas</h1>
-    <p class="page-sub" style="margin-bottom:18px;">${user.role === "vendedor" ? "Registra aquí la cuota mensual que te fue indicada, por línea, para medir tu avance." : `Cuota de ${esc(seller?.name)} — agosto 2026.`}</p>
+    <p class="page-sub" style="margin-bottom:18px;">${user.role === "vendedor" ? "Registra aquí la cuota mensual que te fue indicada, por línea, para medir tu avance." : `Cuota de ${esc(seller?.name)} — ${periodLabel}.`}</p>
+
+    ${cuotasPeriodPickerHtml()}
 
     <div class="card workdays-card" style="max-width:560px;">
       <h2 style="font-size:13px;font-weight:700;margin:0 0 4px;">${icon("sliders",15)} Días hábiles del mes</h2>
@@ -2320,7 +2499,7 @@ function viewCuotas() {
           <label class="check-row"><input type="checkbox" id="wd-saturdays" ${cfg.countSaturdays ? "checked" : ""}> Los sábados cuentan como día hábil</label>
           <label class="check-row"><input type="checkbox" id="wd-sundays" ${cfg.countSundays ? "checked" : ""}> Los domingos cuentan como día hábil</label>
         </div>
-        <div id="wd-calendar-wrap">${workdaysCalendarHtml(2026, 8, cfg, TODAY_ISO)}</div>
+        <div id="wd-calendar-wrap">${workdaysCalendarHtml(cuotasYear, cuotasMonth, cfg, TODAY_ISO)}</div>
         <div class="workdays-summary">
           <div class="wd-cell"><div class="lbl">Días hábiles del mes</div><div class="val" id="wd-total">${wd.totalHabiles}</div></div>
           <div class="wd-cell"><div class="lbl">Ya transcurridos</div><div class="val" id="wd-elapsed">${wd.elapsedHabiles}</div></div>
@@ -2332,11 +2511,11 @@ function viewCuotas() {
 
     <div class="card" style="max-width:560px;">
       <form id="quota-form">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-mut);margin-bottom:4px;">Agosto 2026</div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-mut);margin-bottom:4px;">${esc(periodLabel)}</div>
         <p style="font-size:12px;color:var(--text-mut);margin:0 0 14px;">No siempre te indican la cuota a inicio de mes — puedes dejarla en 0 y actualizarla apenas te la confirmen; Inicio se recalcula al instante.</p>
-        ${LINES.map((l) => { const q = DB.quotas.find((qq) => qq.sellerId === sellerId && qq.year === 2026 && qq.month === 8 && qq.lineId === l.id);
-          return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><span style="width:130px;font-size:13px;font-weight:600;">${l.name}</span><span style="font-size:13px;color:var(--text-mut);">S/</span>
-          <input class="quota-amount" data-line="${l.id}" type="number" min="0" step="0.01" value="${q ? q.amount : ""}" placeholder="0.00" style="flex:1;padding:10px 13px;border-radius:11px;border:1.5px solid var(--border);background:#FBFBFE;font-family:inherit;">
+        ${LINES.map((l) => { const q = DB.quotas.find((qq) => qq.sellerId === sellerId && qq.year === cuotasYear && qq.month === cuotasMonth && qq.lineId === l.id);
+          return `<div class="quota-row"><span class="quota-line-name">${l.name}</span><span class="quota-currency">S/</span>
+          <input class="quota-amount" data-line="${l.id}" type="number" min="0" step="0.01" value="${q ? q.amount : ""}" placeholder="0.00">
           <span class="quota-updated">${q?.updatedAt ? `Act. ${fdate(q.updatedAt)}` : "Sin confirmar"}</span></div>`; }).join("")}
         <div class="total-bar" style="border-top:1px solid var(--border);"><span>Cuota total del mes</span><span class="amount" id="quota-total">S/ 0.00</span></div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:10px;"><button type="submit" class="btn btn-purple">Guardar cuota</button><span id="quota-saved" style="display:none;font-size:12px;font-weight:700;color:var(--green);">${icon("checkCircle",13)} Cuota guardada</span></div>
@@ -2348,18 +2527,35 @@ function attachCuotasEvents() {
   const user = currentUser();
   const sellerId = user.role === "vendedor" ? user.sellerId : DB.sellers[0]?.id;
 
+  // ---- Selector de periodo (mes/año) — navega el historial completo, no solo el mes actual ----
+  $("#cuotas-prev")?.addEventListener("click", () => {
+    cuotasMonth--; if (cuotasMonth < 1) { cuotasMonth = 12; cuotasYear--; }
+    renderRoute();
+  });
+  $("#cuotas-next")?.addEventListener("click", () => {
+    cuotasMonth++; if (cuotasMonth > 12) { cuotasMonth = 1; cuotasYear++; }
+    renderRoute();
+  });
+  $("#cuotas-month-select")?.addEventListener("change", (e) => { cuotasMonth = Number(e.target.value); renderRoute(); });
+  $("#cuotas-year-select")?.addEventListener("change", (e) => { cuotasYear = Number(e.target.value); renderRoute(); });
+  $("#cuotas-today")?.addEventListener("click", () => {
+    cuotasYear = Number(TODAY_ISO.slice(0, 4)); cuotasMonth = Number(TODAY_ISO.slice(5, 7));
+    renderRoute();
+  });
+
   // ---- Cuota por línea ----
   const totalEl = $("#quota-total");
   function refreshTotal() { totalEl.textContent = currency($$(".quota-amount").reduce((s, i) => s + (parseFloat(i.value) || 0), 0)); }
   $$(".quota-amount").forEach((i) => i.addEventListener("input", refreshTotal)); refreshTotal();
   $("#quota-form").addEventListener("submit", (e) => {
     e.preventDefault();
+    const periodYear = cuotasYear, periodMonth = cuotasMonth;
     const changedAmounts = [];
     $$(".quota-amount").forEach((input) => {
       const lineId = input.dataset.line, amount = parseFloat(input.value) || 0;
-      const existing = DB.quotas.find((q) => q.sellerId === sellerId && q.year === 2026 && q.month === 8 && q.lineId === lineId);
+      const existing = DB.quotas.find((q) => q.sellerId === sellerId && q.year === periodYear && q.month === periodMonth && q.lineId === lineId);
       if (existing) { existing.amount = amount; existing.updatedAt = TODAY_ISO; }
-      else DB.quotas.push({ id: `q-${Date.now()}-${lineId}`, sellerId, year: 2026, month: 8, lineId, amount, updatedAt: TODAY_ISO });
+      else DB.quotas.push({ id: `q-${Date.now()}-${lineId}`, sellerId, year: periodYear, month: periodMonth, lineId, amount, updatedAt: TODAY_ISO });
       changedAmounts.push({ lineId, amount });
     });
     $("#quota-saved").style.display = "inline"; toast("Cuota guardada");
@@ -2369,7 +2565,7 @@ function attachCuotasEvents() {
     if (supa) {
       (async () => {
         try {
-          const periodId = await ensurePeriodId(2026, 8, sellerId);
+          const periodId = await ensurePeriodId(periodYear, periodMonth, sellerId);
           const rows = changedAmounts.map((c) => ({ periodo_id: periodId, vendedor_id: sellerId, linea_id: lineUuidFromCode(c.lineId), monto: c.amount }));
           const { error } = await supa.from("cuotas").upsert(rows, { onConflict: "periodo_id,vendedor_id,linea_id" });
           if (error) throw error;
@@ -2381,12 +2577,12 @@ function attachCuotasEvents() {
   });
 
   // ---- Calendario de días hábiles — clic para marcar/desmarcar feriado, recalcula en vivo ----
-  const cfg0 = getWorkConfig(sellerId, 2026, 8);
-  const workCfg = { sellerId, year: 2026, month: 8, countSaturdays: cfg0.countSaturdays, countSundays: cfg0.countSundays, holidays: [...cfg0.holidays] };
+  const cfg0 = getWorkConfig(sellerId, cuotasYear, cuotasMonth);
+  const workCfg = { sellerId, year: cuotasYear, month: cuotasMonth, countSaturdays: cfg0.countSaturdays, countSundays: cfg0.countSundays, holidays: [...cfg0.holidays] };
   function refreshCalendar() {
-    $("#wd-calendar-wrap").innerHTML = workdaysCalendarHtml(2026, 8, workCfg, TODAY_ISO);
+    $("#wd-calendar-wrap").innerHTML = workdaysCalendarHtml(workCfg.year, workCfg.month, workCfg, TODAY_ISO);
     bindCalendarClicks();
-    const wd = computeBusinessDays(2026, 8, workCfg.countSaturdays, workCfg.holidays, TODAY_ISO, workCfg.countSundays);
+    const wd = computeBusinessDays(workCfg.year, workCfg.month, workCfg.countSaturdays, workCfg.holidays, TODAY_ISO, workCfg.countSundays);
     $("#wd-total").textContent = wd.totalHabiles;
     $("#wd-elapsed").textContent = wd.elapsedHabiles;
     $("#wd-remaining").textContent = wd.remainingHabiles;
